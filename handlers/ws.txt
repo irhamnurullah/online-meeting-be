@@ -1,0 +1,143 @@
+package handler
+
+import (
+	"log"
+	"net/http"
+
+	// "online-meeting/helpers"
+	"sync"
+	"time"
+
+	"github.com/gorilla/websocket"
+)
+
+type Client struct {
+	UserID string
+	Conn   *websocket.Conn
+}
+
+// Thread-safe map: roomCode -> list of clients
+type RoomHub struct {
+	Rooms map[string][]*Client
+	Lock  sync.Mutex
+}
+
+var hub = &RoomHub{
+	Rooms: make(map[string][]*Client),
+}
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func WebSocketHandlerWithUserID(w http.ResponseWriter, r *http.Request) {
+	// token := r.URL.Query().Get("token")
+	userID := r.URL.Query().Get("user_id")
+	roomCode := r.URL.Query().Get("room_code")
+
+	// if token == "" {
+	// 	http.Error(w, "Missing token", http.StatusUnauthorized)
+	// 	return
+	// }
+
+	// _, err := helpers.ParseToken(token)
+	// if err != nil {
+	// 	http.Error(w, "Invalid token", http.StatusUnauthorized)
+	// 	return
+	// }
+
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("Upgrade error:", err)
+		return
+	}
+
+	client := &Client{
+		UserID: userID,
+		Conn:   conn,
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Recovered from panic: %v", r)
+		}
+		removeClientFromRoom(roomCode, client)
+		conn.Close()
+	}()
+
+	// Simpan koneksi ke room
+	hub.Lock.Lock()
+	hub.Rooms[roomCode] = append(hub.Rooms[roomCode], client)
+	hub.Lock.Unlock()
+
+	// log.Printf("User %s connected to room %s", userID, roomCode)
+
+	// Setup heartbeat
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetPongHandler(func(string) error {
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		return nil
+	})
+
+	go pingLoop(client)
+
+	// Read message
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			log.Printf("Read error from %s: %v", userID, err)
+			break
+		}
+
+		log.Printf("Message from %s in room %s: %s", userID, roomCode, message)
+		go broadcastToRoom(roomCode, message)
+	}
+}
+
+func broadcastToRoom(roomID string, message []byte) {
+	hub.Lock.Lock()
+	defer hub.Lock.Unlock()
+
+	clients := hub.Rooms[roomID]
+	for _, c := range clients {
+		err := c.Conn.WriteMessage(websocket.TextMessage, message)
+		if err != nil {
+			log.Printf("Write error to %s: %v", c.UserID, err)
+		}
+	}
+}
+
+func removeClientFromRoom(roomID string, target *Client) {
+	hub.Lock.Lock()
+	defer hub.Lock.Unlock()
+
+	clients := hub.Rooms[roomID]
+	newClients := make([]*Client, 0)
+	for _, c := range clients {
+		if c.UserID != target.UserID {
+			newClients = append(newClients, c)
+		}
+	}
+	if len(newClients) == 0 {
+		delete(hub.Rooms, roomID)
+	} else {
+		hub.Rooms[roomID] = newClients
+	}
+	log.Printf("User %s disconnected from room %s", target.UserID, roomID)
+}
+
+func pingLoop(client *Client) {
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		err := client.Conn.WriteMessage(websocket.PingMessage, nil)
+		if err != nil {
+			log.Printf("Ping error to %s: %v", client.UserID, err)
+			client.Conn.Close()
+			break
+		}
+	}
+}
