@@ -42,11 +42,11 @@ func LoadConfig() *Config {
 
 	config := &Config{
 		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnvAsInt("DB_PORT", 5432),
-			User:     getEnv("DB_USER", "postgres"),
-			Password: getEnv("DB_PASSWORD", "123"),
-			DBName:   getEnv("DB_NAME", "mydb"),
+			Host:     getEnv("PGHOST", "localhost"),
+			Port:     getEnvAsInt("PGPORT", 5432),
+			User:     getEnv("PGUSER", "postgres"),
+			Password: getEnv("PGPASSWORD", "123"),
+			DBName:   getEnv("PGDATABASE", "mydb"),
 			SSLMode:  getEnv("DB_SSL", "disable"),
 			TimeZone: getEnv("DB_TIMEZONE", "Asia/Jakarta"),
 		},
