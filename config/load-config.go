@@ -42,41 +42,42 @@ func LoadConfig() *Config {
 
 	config := &Config{
 		Database: DatabaseConfig{
-			Host:     getEnv("PGHOST", "localhost"),
-			Port:     getEnvAsInt("PGPORT", 5432),
-			User:     getEnv("PGUSER", "postgres"),
-			Password: getEnv("PGPASSWORD", "123"),
-			DBName:   getEnv("PGDATABASE", "mydb"),
-			SSLMode:  getEnv("DB_SSL", "disable"),
-			TimeZone: getEnv("DB_TIMEZONE", "Asia/Jakarta"),
+			Host:     os.Getenv("PGHOST"),
+			Port:     getEnvAsInt("PGPORT"),
+			User:     os.Getenv("PGUSER"),
+			Password: os.Getenv("PGPASSWORD"),
+			DBName:   os.Getenv("PGDATABASE"),
+			SSLMode:  os.Getenv("DB_SSL"),
+			TimeZone: os.Getenv("DB_TIMEZONE"),
 		},
 		Server: ServerConfig{
-			Port: getEnv("SERVER_PORT", "8080"),
-			Host: getEnv("SERVER_HOST", "localhost"),
+			Port: os.Getenv("SERVER_PORT"),
+			Host: os.Getenv("SERVER_HOST"),
 		},
 		API: APIConfig{
-			APIKey: getEnv("API_KEY", ""),
+			APIKey: os.Getenv("API_KEY"),
 		},
 	}
 
 	return config
 }
 
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
-}
-
-// Helper function untuk convert env var ke integer
-func getEnvAsInt(key string, defaultValue int) int {
+func getEnvAsInt(key string) int {
 	if value := os.Getenv(key); value != "" {
 		if intValue, err := strconv.Atoi(value); err == nil {
 			return intValue
 		}
 	}
-	return defaultValue
+	return 0
+}
+
+func getEnvAsBool(key string) bool {
+	if value := os.Getenv(key); value != "" {
+		if boolValue, err := strconv.ParseBool(value); err == nil {
+			return boolValue
+		}
+	}
+	return false
 }
 
 func (db *DatabaseConfig) GetDSN() string {
@@ -90,13 +91,3 @@ func (db *DatabaseConfig) GetDSN() string {
 		db.TimeZone,
 	)
 }
-
-// Helper function untuk convert env var ke boolean
-// func getEnvAsBool(key string, defaultValue bool) bool {
-// 	if value := os.Getenv(key); value != "" {
-// 		if boolValue, err := strconv.ParseBool(value); err == nil {
-// 			return boolValue
-// 		}
-// 	}
-// 	return defaultValue
-// }
