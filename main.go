@@ -16,7 +16,7 @@ import (
 
 func main() {
 	config.ConnectionDatabase()
-	port := config.LoadConfig().Server.Port
+	// port := config.LoadConfig().Server.Port
 
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
@@ -55,5 +55,5 @@ func main() {
 	// 	c.JSON(200, gin.H{"message": "Seeding selesai"})
 	// })
 
-	r.Run(":" + port)
+	r.Run(":8080")
 }

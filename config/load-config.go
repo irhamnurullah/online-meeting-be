@@ -2,11 +2,8 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -36,9 +33,9 @@ type APIConfig struct {
 
 func LoadConfig() *Config {
 	// Load .env file
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, using system environment variables")
-	}
+	// if err := godotenv.Load(); err != nil {
+	// 	log.Println("No .env file found, using system environment variables")
+	// }
 
 	config := &Config{
 		Database: DatabaseConfig{

@@ -13,9 +13,10 @@ import (
 var DB *gorm.DB
 
 func ConnectionDatabase() {
-	config := LoadConfig()
+	// config := LoadConfig()
 
-	dsn := config.Database.GetDSN()
+	// dsn := config.Database.GetDSN()
+	dsn := "host=switchyard.proxy.rlwy.net user=postgres password=CYcBzUudHWNrLMIPxAoYjSUHElSJmhdr dbname=railway port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 	// dsn := "host=localhost user=irhamnurullah password=123 dbname=belajar-go-pg port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
