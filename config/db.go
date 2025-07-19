@@ -16,7 +16,7 @@ func ConnectionDatabase() {
 	// config := LoadConfig()
 
 	// dsn := config.Database.GetDSN()
-	dsn := "host=switchyard.proxy.rlwy.net user=postgres password=CYcBzUudHWNrLMIPxAoYjSUHElSJmhdr dbname=railway port=41775 sslmode=disable TimeZone=Asia/Jakarta"
+	dsn := "host=switchyard.proxy.rlwy.net user=postgres password=CYcBzUudHWNrLMIPxAoYjSUHElSJmhdr dbname=railway port=41775 sslmode=disable"
 	// dsn := "host=localhost user=irhamnurullah password=123 dbname=belajar-go-pg port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
