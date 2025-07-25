@@ -14,7 +14,7 @@ var upgrader = websocket.Upgrader{
 var roomConnections = make(map[string][]*websocket.Conn)
 
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
-	roomID := r.URL.Query().Get("room")
+	roomID := r.URL.Query().Get("room_code")
 	if roomID == "" {
 		roomID = "room-123" // default room
 	}

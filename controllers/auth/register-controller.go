@@ -20,8 +20,8 @@ func AuthRegister(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "Data input tidak valid",
-			"details": err.Error(),
+			"error": "Invalid data input",
+			// "details": err.Error(),
 		})
 
 		return
@@ -30,14 +30,14 @@ func AuthRegister(c *gin.Context) {
 	// cek email exist ?
 	var existingUser models.User
 	if err := config.DB.Where("email = ?", input.Email).First(&existingUser).Error; err == nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "Email sudah digunakan"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Email already taken"})
 		return
 	}
 
 	// Hashing password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengenkripsi password"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal mengenkripsi password"})
 		return
 	}
 
@@ -48,12 +48,12 @@ func AuthRegister(c *gin.Context) {
 		Password: string(hashedPassword),
 	}
 	if err := config.DB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mendaftar user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal mendaftar user"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Cek input berhasil",
+		"message": "Success registered",
 		"data": gin.H{
 			"name":  user.Name,
 			"email": user.Email,
