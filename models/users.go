@@ -12,6 +12,7 @@ type User struct {
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 
-	Address     []Address `gorm:"foreignKey:UserId"`
-	RoomCreated []Room    `gorm:"foreignKey:HostID"`
+	ProfileCreated    []Profile    `gorm:"foreignKey:UserID"`
+	ExperienceCreated []Experience `gorm:"foreignKey:UserID"`
+	EducationCreated  []Education  `gorm:"foreignKey:UserID"`
 }

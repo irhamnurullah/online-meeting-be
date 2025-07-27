@@ -15,6 +15,14 @@ type RegisterInput struct {
 	Password string `json:"password" binding:"required,min=6"`
 }
 
+// AuthRegister godoc
+// @Summary Register
+// @Description Registrasi akun baru
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param body body RegisterInput true "Register Data"
+// @Router /auth/register [post]
 func AuthRegister(c *gin.Context) {
 	var input RegisterInput
 

@@ -13,6 +13,14 @@ var upgrader = websocket.Upgrader{
 
 var roomConnections = make(map[string][]*websocket.Conn)
 
+// WebSocketHandler godoc
+// @Summary WebSocket Endpoint
+// @Description Koneksi WebSocket untuk real-time communication
+// @Tags WebSocket
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {string} string "Connected"
+// @Router /wss [get]
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	roomID := r.URL.Query().Get("room_code")
 	if roomID == "" {

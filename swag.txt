@@ -1,0 +1,254 @@
+====================
+🔐 AUTH
+====================
+
+// AuthLogin godoc
+// @Summary Login
+// @Description Login dan mendapatkan JWT token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param body body models.LoginRequest true "Login Data"
+// @Success 200 {object} models.LoginResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Router /auth/login [post]
+
+// AuthRegister godoc
+// @Summary Register
+// @Description Registrasi akun baru
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param body body models.RegisterRequest true "Register Data"
+// @Success 201 {object} models.RegisterResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /auth/register [post]
+
+====================
+👥 USERS
+====================
+
+// GetUsers godoc
+// @Summary Get Users
+// @Description Mengambil seluruh data user
+// @Tags Users
+// @Produce json
+// @Success 200 {array} models.User
+// @Failure 401 {object} models.ErrorResponse
+// @Router /users [get]
+
+====================
+👤 PROFILE
+====================
+
+// CreateProfile godoc
+// @Summary Buat Profile
+// @Description Menambahkan data profile user
+// @Tags Profile
+// @Accept json
+// @Produce json
+// @Param body body models.ProfileRequest true "Profile Data"
+// @Success 201 {object} models.ProfileResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /profile [post]
+
+// GetProfile godoc
+// @Summary Ambil Profile
+// @Description Mengambil data profile user yang login
+// @Tags Profile
+// @Produce json
+// @Success 200 {object} models.ProfileResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Router /profile [get]
+
+====================
+🎓 EDUCATION
+====================
+
+// CreateEducation godoc
+// @Summary Tambah Pendidikan
+// @Description Menambahkan riwayat pendidikan user
+// @Tags Education
+// @Accept json
+// @Produce json
+// @Param body body models.EducationRequest true "Education Data"
+// @Success 201 {object} models.EducationResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /education [post]
+
+// GetEducation godo
+// @Summary Lihat Pendidikan
+// @Description Mengambil data pendidikan user
+// @Tags Education
+// @Produce json
+// @Success 200 {array} models.EducationResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Router /education [get]
+
+====================
+💼 EXPERIENCE
+====================
+
+// CreateExperience godoc
+// @Summary Tambah Pengalaman
+// @Description Menambahkan pengalaman kerja user
+// @Tags Experience
+// @Accept json
+// @Produce json
+// @Param body body models.ExperienceRequest true "Experience Data"
+// @Success 201 {object} models.ExperienceResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /experience [post]
+
+// GetExperience godoc
+// @Summary Lihat Pengalaman
+// @Description Mengambil data pengalaman kerja user
+// @Tags Experience
+// @Produce json
+// @Success 200 {array} models.ExperienceResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Router /experience [get]
+
+====================
+🧑‍🏫 MENTOR
+====================
+
+// GetListMentor godoc
+// @Summary List Mentor
+// @Description Menampilkan daftar mentor
+// @Tags Mentor
+// @Produce json
+// @Success 200 {array} models.MentorResponse
+// @Router /list-mentor [get]
+
+// GetDetailMentor godoc
+// @Summary Detail Mentor
+// @Description Menampilkan detail mentor berdasarkan ID
+// @Tags Mentor
+// @Produce json
+// @Param id path int true "ID Mentor"
+// @Success 200 {object} models.MentorDetailResponse
+// @Router /mentor/{id} [get]
+
+====================
+🧑‍🎓 MENTEE
+====================
+
+// GetListMentee godoc
+// @Summary List Mentee
+// @Description Menampilkan daftar mentee
+// @Tags Mentee
+// @Produce json
+// @Success 200 {array} models.MenteeResponse
+// @Router /list-mentee [get]
+
+// GetDetailMentee godoc
+// @Summary Detail Mentee
+// @Description Menampilkan detail mentee berdasarkan ID
+// @Tags Mentee
+// @Produce json
+// @Param id path int true "ID Mentee"
+// @Success 200 {object} models.MenteeDetailResponse
+// @Router /mentee/{id} [get]
+
+====================
+📅 APPOINTMENT
+====================
+
+// CreateAppointment godoc
+// @Summary Buat Janji
+// @Description Membuat janji temu antara mentee dan mentor
+// @Tags Appointment
+// @Accept json
+// @Produce json
+// @Param body body models.AppointmentRequest true "Appointment Data"
+// @Success 201 {object} models.AppointmentResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Router /appointment/create [post]
+
+// GetAppointments godoc
+// @Summary List Appointment
+// @Description Menampilkan semua appointment user
+// @Tags Appointment
+// @Produce json
+// @Success 200 {array} models.AppointmentResponse
+// @Router /appointment/list [get]
+
+// UpdateStatusAppointment godoc
+// @Summary Update Status Appointment
+// @Description Mengubah status appointment (acc/tolak)
+// @Tags Appointment
+// @Accept json
+// @Produce json
+// @Param id path int true "ID Appointment"
+// @Param body body models.UpdateStatusRequest true "Status Update"
+// @Success 200 {object} models.AppointmentResponse
+// @Router /appointment/update-status/{id} [post]
+
+====================
+📆 SCHEDULE
+====================
+
+// GetSchedules godoc
+// @Summary List Jadwal
+// @Description Menampilkan semua jadwal yang dibuat
+// @Tags Schedule
+// @Produce json
+// @Success 200 {array} models.ScheduleResponse
+// @Router /schedule/list [get]
+
+// CreateSchedule godoc
+// @Summary Buat Jadwal
+// @Description Menambahkan jadwal ketersediaan mentor
+// @Tags Schedule
+// @Accept json
+// @Produce json
+// @Param body body models.ScheduleRequest true "Schedule Data"
+// @Success 201 {object} models.ScheduleResponse
+// @Router /schedule/create [post]
+
+// UpdateSchedule godoc
+// @Summary Ubah Jadwal
+// @Description Mengubah jadwal ketersediaan mentor
+// @Tags Schedule
+// @Accept json
+// @Produce json
+// @Param body body models.ScheduleUpdateRequest true "Update Data"
+// @Success 200 {object} models.ScheduleResponse
+// @Router /schedule/update [put]
+
+// DeleteSchedule godoc
+// @Summary Hapus Jadwal
+// @Description Menghapus jadwal mentor
+// @Tags Schedule
+// @Accept json
+// @Produce json
+// @Param body body models.ScheduleDeleteRequest true "Delete Payload"
+// @Success 200 {object} models.BaseResponse
+// @Router /schedule/delete [delete]
+
+====================
+🏠 ROOM
+====================
+
+// CreateRoom godoc
+// @Summary Buat Room Meeting
+// @Description Membuat room meeting antara mentee dan mentor
+// @Tags Room
+// @Accept json
+// @Produce json
+// @Param body body models.RoomRequest true "Room Data"
+// @Success 201 {object} models.RoomResponse
+// @Router /room/create [post]
+
+====================
+📡 WEBSOCKET
+====================
+
+// WebSocketHandler godoc
+// @Summary WebSocket Endpoint
+// @Description Koneksi WebSocket untuk real-time communication
+// @Tags WebSocket
+// @Produce json
+// @Success 200 {string} string "Connected"
+// @Router /ws [get]

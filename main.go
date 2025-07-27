@@ -2,58 +2,41 @@ package main
 
 import (
 	"online-meeting/config"
-	"online-meeting/controllers"
-	"online-meeting/controllers/auth"
-	"online-meeting/controllers/rooms"
-	handler "online-meeting/handlers"
-	"online-meeting/middlewares"
-	"time"
-
-	"github.com/gin-contrib/cors"
+	"online-meeting/routes"
 
 	"github.com/gin-gonic/gin"
+
+	_ "online-meeting/docs" // import ini penting untuk swag membaca file docs.go
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Online Meeting API
+// @version 1.0
+// @description Ini adalah dokumentasi API untuk aplikasi online meeting.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Tim Developer
+// @contact.email support@example.com
+
+// @host localhost:8080
+// @BasePath /
+// @schemes http
+
+// ✅ Tambahkan ini di sini
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	config.ConnectionDatabase()
-	// port := config.LoadConfig().Server.Port
+	config.LoadEnv()
 
 	r := gin.Default()
-	r.SetTrustedProxies(nil)
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // ganti sesuai asal FE kamu
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.DefaultModelsExpandDepth(-1)))
 
-	r.POST("/auth/login", auth.AuthLogin)
-	r.POST("/auth/register", auth.AuthRegister)
+	routes.SetupRoutes(r)
 
-	protected := r.Group("")
-	protected.Use(middlewares.AuthMiddleware())
-	{
-		protected.GET("/users", controllers.GetUsers)
-		protected.POST("/create-room", rooms.CreateRoom)
-
-	}
-	r.GET("/ws", func(c *gin.Context) {
-		// roomCode := c.Query("room_code")
-		// if roomCode == "" {
-		// 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Missing room_code"})
-		// 	return
-		// }
-
-		// userID := c.MustGet("user_id").(string) // Diambil dari AuthMiddleware
-		handler.WebSocketHandler(c.Writer, c.Request)
-	})
-
-	// r.GET("/seed", func(c *gin.Context) {
-	// 	config.SeedData()
-	// 	c.JSON(200, gin.H{"message": "Seeding selesai"})
-	// })
-
-	r.Run(":8080")
+	port := config.GetEnv("APP_PORT")
+	r.Run(":" + port)
 }

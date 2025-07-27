@@ -1,0 +1,507 @@
+basePath: /
+definitions:
+  appointments.CreateAppointmentRequest:
+    properties:
+      chellenge:
+        type: string
+      id_mentor:
+        type: integer
+      id_metee:
+        type: integer
+      metric:
+        type: string
+      objective:
+        type: string
+      status:
+        $ref: '#/definitions/models.AppointmentStatus'
+    type: object
+  appointments.UpdateStatusRequest:
+    properties:
+      status:
+        $ref: '#/definitions/models.AppointmentStatus'
+    required:
+    - status
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.RegisterInput:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  educations.CreateEducationRequest:
+    properties:
+      end_year:
+        type: string
+      major:
+        type: string
+      university_name:
+        type: string
+    type: object
+  experiences.CreateExperienceRequest:
+    properties:
+      achievement:
+        type: string
+      company_name:
+        type: string
+      current_position:
+        type: string
+      skills:
+        type: string
+      start_year:
+        type: string
+    type: object
+  models.AppointmentStatus:
+    enum:
+    - booking
+    - scheduled
+    - done
+    type: string
+    x-enum-comments:
+      StatusBooking: Saat mentee baru membuat permintaan
+      StatusDone: Setelah meeting selesai
+      StatusScheduled: Setelah disetujui & dijadwalkan
+    x-enum-descriptions:
+    - Saat mentee baru membuat permintaan
+    - Setelah disetujui & dijadwalkan
+    - Setelah meeting selesai
+    x-enum-varnames:
+    - StatusBooking
+    - StatusScheduled
+    - StatusDone
+  profiles.CreateProfileRequest:
+    properties:
+      contact_person:
+        maxLength: 100
+        type: string
+      date_birth:
+        type: string
+      fullname:
+        maxLength: 100
+        minLength: 2
+        type: string
+      is_mentor:
+        type: boolean
+      profile_description:
+        maxLength: 1000
+        type: string
+      profile_picture:
+        type: string
+    required:
+    - date_birth
+    - fullname
+    type: object
+  rooms.CreateRoomRequest:
+    properties:
+      room_name:
+        type: string
+      schedule_id:
+        type: integer
+    required:
+    - room_name
+    - schedule_id
+    type: object
+  schedules.CreateScheduleRequest:
+    properties:
+      appointment_id:
+        type: integer
+      end_date:
+        type: string
+      start_date:
+        type: string
+    type: object
+  schedules.DeleteScheduleRequest:
+    properties:
+      id:
+        type: integer
+    type: object
+  schedules.UpdateScheduleRequest:
+    properties:
+      appointment_id:
+        type: integer
+      end_date:
+        type: string
+      id:
+        type: integer
+      start_date:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: Tim Developer
+  description: Ini adalah dokumentasi API untuk aplikasi online meeting.
+  termsOfService: http://swagger.io/terms/
+  title: Online Meeting API
+  version: "1.0"
+paths:
+  /appointment/create:
+    post:
+      consumes:
+      - application/json
+      description: Membuat janji temu antara mentee dan mentor
+      parameters:
+      - description: Appointment Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/appointments.CreateAppointmentRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Buat Janji
+      tags:
+      - Appointment
+  /appointment/list:
+    get:
+      description: Menampilkan semua appointment user
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: List Appointment
+      tags:
+      - Appointment
+  /appointment/update-status/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Mengubah status appointment (booking/scheduled/done)
+      parameters:
+      - description: ID Appointment
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status Update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/appointments.UpdateStatusRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Update Status Appointment
+      tags:
+      - Appointment
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login dan mendapatkan JWT token
+      parameters:
+      - description: Login Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Login
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Registrasi akun baru
+      parameters:
+      - description: Register Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterInput'
+      produces:
+      - application/json
+      responses: {}
+      summary: Register
+      tags:
+      - Auth
+  /education:
+    get:
+      description: Mengambil data education user yang login
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Ambil Education
+      tags:
+      - Education
+    post:
+      consumes:
+      - application/json
+      description: Membuat education baru
+      parameters:
+      - description: Education Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/educations.CreateEducationRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Create Education
+      tags:
+      - Education
+  /experience:
+    get:
+      description: Mengambil data Experience user yang login
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Ambil Experience
+      tags:
+      - Experience
+    post:
+      consumes:
+      - application/json
+      description: Membuat experience baru
+      parameters:
+      - description: Experience Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/experiences.CreateExperienceRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Create Experience
+      tags:
+      - Experience
+  /list-mentee:
+    get:
+      description: Menampilkan daftar mentee
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: List Mentee
+      tags:
+      - Mentee
+  /list-mentor:
+    get:
+      description: Menampilkan daftar mentor
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: List Mentor
+      tags:
+      - Mentor
+  /mentee/{id}:
+    get:
+      description: Menampilkan detail mentee berdasarkan ID
+      parameters:
+      - description: ID Mentee
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Detail Mentee
+      tags:
+      - Mentee
+  /mentor/{id}:
+    get:
+      description: Menampilkan detail mentor berdasarkan ID
+      parameters:
+      - description: ID Mentor
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Detail Mentor
+      tags:
+      - Mentor
+  /profile:
+    get:
+      description: Mengambil data profile user yang login
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Ambil Profile
+      tags:
+      - Profile
+    post:
+      consumes:
+      - application/json
+      description: Membuat profil baru
+      parameters:
+      - description: Profile Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/profiles.CreateProfileRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Create Profile
+      tags:
+      - Profile
+  /room/create:
+    post:
+      consumes:
+      - application/json
+      description: Membuat room meeting antara mentee dan mentor
+      parameters:
+      - description: Room Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rooms.CreateRoomRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Buat Room Meeting
+      tags:
+      - Room
+  /schedule/create:
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan jadwal ketersediaan mentor
+      parameters:
+      - description: Schedule Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schedules.CreateScheduleRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Buat Jadwal
+      tags:
+      - Schedule
+  /schedule/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Menghapus jadwal mentor
+      parameters:
+      - description: Delete Payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schedules.DeleteScheduleRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Hapus Jadwal
+      tags:
+      - Schedule
+  /schedule/list:
+    get:
+      description: Menampilkan semua jadwal yang dibuat
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: List Jadwal
+      tags:
+      - Schedule
+  /schedule/update:
+    put:
+      consumes:
+      - application/json
+      description: Mengubah jadwal ketersediaan mentor
+      parameters:
+      - description: Update Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schedules.UpdateScheduleRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Ubah Jadwal
+      tags:
+      - Schedule
+  /wss:
+    get:
+      description: Koneksi WebSocket untuk real-time communication
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connected
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: WebSocket Endpoint
+      tags:
+      - WebSocket
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

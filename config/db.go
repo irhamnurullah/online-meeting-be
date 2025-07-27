@@ -1,35 +1,55 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"online-meeting/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	"os"
 )
 
 var DB *gorm.DB
 
 func ConnectionDatabase() {
-	// config := LoadConfig()
+	LoadEnv()
 
-	// dsn := config.Database.GetDSN()
-	dsn := "host=switchyard.proxy.rlwy.net user=postgres password=CYcBzUudHWNrLMIPxAoYjSUHElSJmhdr dbname=railway port=41775 sslmode=disable"
-	// dsn := "host=localhost user=irhamnurullah password=123 dbname=belajar-go-pg port=5432 sslmode=disable TimeZone=Asia/Jakarta"
+	// dsn := "host=switchyard.proxy.rlwy.net user=postgres password=CYcBzUudHWNrLMIPxAoYjSUHElSJmhdr dbname=railway port=41775 sslmode=disable"
+
+	timezone := GetEnv("DB_TIMEZONE")
+
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		GetEnv("DB_HOST"),
+		GetEnv("DB_USER"),
+		GetEnv("DB_PASSWORD"),
+		GetEnv("DB_DATABASE"),
+		GetEnv("DB_PORT"),
+		GetEnv("DB_SSL"),
+	)
+
+	if timezone != "" {
+		dsn += fmt.Sprintf(" TimeZone=%s", timezone)
+	}
+
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Gagal koneksi ke database: ", err)
 	}
 
+	var autoMigrate = GetEnv("AUTO_MIGRATE")
+
 	// migrasi bila diperlukan
-	if os.Getenv("AUTO_MIGRATE") == "true" {
+	if autoMigrate == "true" {
 		err = database.AutoMigrate(
 			&models.User{},
-			&models.Address{},
-			&models.Room{},
+			&models.Rooms{},
+			&models.Profile{},
+			&models.Education{},
+			&models.Experience{},
+			&models.Appointment{},
+			&models.ScheduleAppointment{},
 		)
 	}
 
