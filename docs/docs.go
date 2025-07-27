@@ -795,7 +795,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
 	BasePath:         "/",
-	Schemes:          []string{"http"},
+	Schemes:          []string{},
 	Title:            "Online Meeting API",
 	Description:      "Ini adalah dokumentasi API untuk aplikasi online meeting.",
 	InfoInstanceName: "swagger",

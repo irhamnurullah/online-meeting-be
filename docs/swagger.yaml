@@ -496,8 +496,6 @@ paths:
       summary: WebSocket Endpoint
       tags:
       - WebSocket
-schemes:
-- http
 securityDefinitions:
   BearerAuth:
     in: header
