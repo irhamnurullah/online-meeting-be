@@ -9,6 +9,7 @@ import (
 )
 
 func GenerateToken(userId uint, email string) (string, error) {
+	secret := config.JwtSecret()
 	claims := jwt.MapClaims{
 		"user_id": userId,
 		"email":   email,
@@ -16,7 +17,7 @@ func GenerateToken(userId uint, email string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(config.SecretKey)
+	return token.SignedString(secret)
 }
 
 type TokenClaims struct {
@@ -25,12 +26,12 @@ type TokenClaims struct {
 	jwt.RegisteredClaims
 }
 
-var jwtSecret = []byte("b15miLl4H")
-
 func ParseToken(tokenString string) (*TokenClaims, error) {
 	claims := &TokenClaims{}
+	secret := config.JwtSecret()
+
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return secret, nil
 	})
 	if err != nil || !token.Valid {
 		return nil, errors.New("invalid token")

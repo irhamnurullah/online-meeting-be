@@ -31,6 +31,7 @@ import (
 func main() {
 	config.ConnectionDatabase()
 	config.LoadEnv()
+	config.InitConfigJwt()
 
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.DefaultModelsExpandDepth(-1)))
