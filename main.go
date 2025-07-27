@@ -20,7 +20,6 @@ import (
 // @contact.name Tim Developer
 // @contact.email support@example.com
 
-// @host localhost:8080
 // @BasePath /
 // @schemes http
 
