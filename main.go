@@ -21,7 +21,7 @@ import (
 // @contact.email support@example.com
 
 // @BasePath /
-// @schemes http
+// @schemes https
 
 // ✅ Tambahkan ini di sini
 // @securityDefinitions.apikey BearerAuth
